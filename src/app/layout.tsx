@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Sub Convertor - VLESS 转 YAML",
   description: "将 VLESS 链接转换为 Clash YAML 配置文件",
+  icons: {
+    icon: "/logo-light.svg",
+  },
 };
 
 export default function RootLayout({

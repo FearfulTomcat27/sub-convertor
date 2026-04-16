@@ -100,6 +100,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-neutral-100 flex flex-col items-center justify-start py-12 px-4">
       <header className="mb-10 text-center">
+        <img src="/logo-light.svg" alt="Sub Convertor" className="mx-auto h-12 mb-3" />
         <h1 className="text-4xl font-bold text-neutral-900 tracking-tight">
           Sub Convertor
         </h1>
