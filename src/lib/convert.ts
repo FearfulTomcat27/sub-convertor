@@ -6,7 +6,7 @@ const AUTO_SELECTION = "♻️ 自动选择";
 
 function parseVlessUrl(vlessUrl: string): ProxyConfig {
   const u = new URL(vlessUrl);
-  const name = u.hash ? decodeURIComponent(u.hash) : "UnnamedNode";
+  const name = u.hash ? decodeURIComponent(u.hash.slice(1)) : "UnnamedNode";
 
   return {
     name,
