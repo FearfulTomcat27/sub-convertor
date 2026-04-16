@@ -6,7 +6,6 @@ import { vlessLinksToClashConfig } from "@/lib/convert";
 
 interface OutputState {
   yaml: string;
-  fileName: string;
 }
 
 export default function Home() {
@@ -51,27 +50,45 @@ export default function Home() {
         lineWidth: -1,
         noRefs: true,
       });
-      setOutput({
-        yaml: yamlString,
-        fileName:
-          config.proxies.length > 1
-            ? "config"
-            : config.proxies[0]?.name || "config",
-      });
+      setOutput({ yaml: yamlString });
     } catch (e) {
       setError("链接解析失败：" + (e as Error).message);
     }
   }
 
-  function handleDownload() {
+  async function handleDownload() {
     if (!output) return;
+
+    // 优先使用 File System Access API 弹出"另存为"对话框
+    if ("showSaveFilePicker" in window) {
+      try {
+        const handle = await (window as unknown as { showSaveFilePicker: (options: SaveFilePickerOptions) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
+          suggestedName: "sub.yaml",
+          types: [
+            {
+              description: "YAML 文件",
+              accept: { "text/yaml": [".yaml", ".yml"] },
+            },
+          ],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(output.yaml);
+        await writable.close();
+        return;
+      } catch (e) {
+        // 用户取消选择或其他错误，静默处理
+        if ((e as Error).name === "AbortError") return;
+      }
+    }
+
+    // 不支持 File System Access API 时 fallback 到直接下载
     const blob = new Blob([output.yaml], {
       type: "text/yaml;charset=utf-8",
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${output.fileName}.yaml`;
+    a.download = "sub.yaml";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
