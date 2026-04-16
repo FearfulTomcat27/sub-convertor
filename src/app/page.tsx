@@ -62,7 +62,8 @@ export default function Home() {
     // 优先使用 File System Access API 弹出"另存为"对话框
     if ("showSaveFilePicker" in window) {
       try {
-        const handle = await (window as unknown as { showSaveFilePicker: (options: SaveFilePickerOptions) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const handle = await (window as any).showSaveFilePicker({
           suggestedName: "sub.yaml",
           types: [
             {
@@ -71,7 +72,8 @@ export default function Home() {
             },
           ],
         });
-        const writable = await handle.createWritable();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const writable = await (handle as any).createWritable();
         await writable.write(output.yaml);
         await writable.close();
         return;
